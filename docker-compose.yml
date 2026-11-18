@@ -1,14 +1,18 @@
 services:
   mailflare:
-    build: .
-    image: mailflare:local
-    restart: unless-stopped
-    ports:
-      - "3000:3000"   # web app and JMAP
-      - "25:25"       # inbound SMTP (point your domain's MX here)
-    env_file: .env.docker
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - APP_URL=https://workspace.growthkulagency.com
     volumes:
-      - mailflare-data:/data
+      - ../files/mailflare-data:/data
+    networks:
+      - dokploy-network
 
-volumes:
-  mailflare-data:
+networks:
+  dokploy-network:
+    external: true
